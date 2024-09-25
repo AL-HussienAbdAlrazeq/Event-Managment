@@ -21,7 +21,7 @@ const signin = catchError(async (req, res, next) => {
   const user = await User.findOne({ email: req.body.email });
 
   if (!user || !bcrypt.compareSync(req.body.password, user.password))
-    return next(new AppError("incorrect email or password ", 404));
+    return next(new AppError("incorrect email or password ", 401));
 
   jwt.sign(
     { userId: user.id, username: user.username },
@@ -43,12 +43,7 @@ const protectedRoutes = catchError(async (req, res, next) => {
     userPayload = payload;
   });
   let user = await User.findById(userPayload.userId);
-  if (!user) return next(new AppError("User Not Found", 401));
-  if (user.passwordChangedAt) {
-    let time = parseInt(user.passwordChangedAt.getTime() / 1000);
-    if (time > userPayload.iat)
-      return next(new AppError("Invalid Token...Login Again", 401));
-  }
+  if (!user) return next(new AppError("User Not Found", 404));
   req.user = user;
   next();
 });

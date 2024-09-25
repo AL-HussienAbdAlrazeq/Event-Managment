@@ -13,6 +13,6 @@ eventRouter.get('/:id' ,protectedRoutes , findEventById)
 eventRouter.put('/:id' , protectedRoutes ,validate(updateEventValidation),updateEvent)
 eventRouter.delete('/:id',protectedRoutes , deleteEvent)
 
-
+  
 
 export default eventRouter
